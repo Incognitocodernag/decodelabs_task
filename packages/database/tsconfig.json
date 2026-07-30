@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "es2020",
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": ".",
+    "types": ["node"],
+    "moduleResolution": "nodenext"
+  },
+  "include": ["index.ts"],
+  "exclude": ["node_modules"]
+}
