@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      String   @default("STUDENT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  profile          Profile?
+  chats            Chat[]
+  messages         Message[]
+  submissions      Submission[]
+  attendance       Attendance[]
+  assignedProjects Assignment[] @relation("AssignedProjects")
+  notifications    Notification[]
+}
+
+model Assignment {
+  id           String       @id @default(uuid())
+  title        String
+  description  String
+  dueDate      DateTime
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  assignedToId String?
+
+  assignedTo   User?        @relation("AssignedProjects", fields: [assignedToId], references: [id], onDelete: SetNull)
+  submissions  Submission[]
+}
+
+model Submission {
+  id           String     @id @default(uuid())
+  assignmentId String
+  studentId    String
+  fileUrl      String
+  status       String     @default("PENDING") // PENDING, GRADED
+  grade        Int?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Attendance {
+  id           String    @id @default(uuid())
+  studentId    String
+  date         String    // YYYY-MM-DD format
+  status       String    @default("PRESENT")
+  checkInTime  DateTime?
+  checkOutTime DateTime?
+  
+  student      User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  isGroup   Boolean   @default(false)
+  name      String?
+  users     User[]
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  bio       String?
+  skills    String?
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
