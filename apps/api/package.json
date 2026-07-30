@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "start:cluster": "tsx src/cluster.ts",
     "dev": "nodemon --watch src --ext ts --exec tsx src/index.ts",
-    "build": "tsc"
+    "build": "cd ../.. && npm run build --workspace=database --if-present && cd apps/api && tsc"
   },
   "keywords": [],
   "author": "",
