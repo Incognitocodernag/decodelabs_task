@@ -54,7 +54,7 @@ export const getMessages = async (req: Request, res: Response): Promise<void> =>
     // Verify user is part of the chat
     const chat = await prisma.chat.findFirst({
       where: {
-        id,
+        id: id as string,
         users: {
           some: {
             id: userId
@@ -70,7 +70,7 @@ export const getMessages = async (req: Request, res: Response): Promise<void> =>
 
     const messages = await prisma.message.findMany({
       where: {
-        chatId: id
+        chatId: id as string
       },
       include: {
         sender: {

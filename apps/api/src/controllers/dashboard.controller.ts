@@ -32,7 +32,7 @@ export const getStudentDashboard = async (req: Request, res: Response) => {
         assignment: true
       },
       orderBy: {
-        submittedAt: 'desc'
+        createdAt: 'desc'
       }
     });
 
@@ -60,7 +60,7 @@ export const getStudentDashboard = async (req: Request, res: Response) => {
     // Attendance Rate (Mocking for now as we don't have a robust attendance system yet)
     // Could calculate based on Attendance model if we had daily records
     const attendanceCount = await prisma.attendance.count({
-      where: { userId }
+      where: { studentId: userId }
     });
     const attendanceRate = attendanceCount > 0 ? 100 : 0; // Simplified
 

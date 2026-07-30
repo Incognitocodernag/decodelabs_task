@@ -113,7 +113,7 @@ router.put("/:id/grade", requireAdmin, async (req, res) => {
     }
     
     const submission = await prisma.submission.update({
-      where: { id },
+      where: { id: id as string },
       data: {
         grade: parsedData.data.grade,
         status: "GRADED"

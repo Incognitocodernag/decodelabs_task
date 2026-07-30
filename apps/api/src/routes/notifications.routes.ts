@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { PrismaClient } from "@repo/database";
-import { authenticate } from "../middleware/auth";
+import { prisma } from "database";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get all notifications for the authenticated user
-router.get("/", authenticate, async (req: any, res) => {
+router.get("/", requireAuth, async (req: any, res) => {
   try {
     const userId = req.user.userId;
     const notifications = await prisma.notification.findMany({
@@ -22,7 +21,7 @@ router.get("/", authenticate, async (req: any, res) => {
 });
 
 // Mark all as read
-router.post("/mark-read", authenticate, async (req: any, res) => {
+router.post("/mark-read", requireAuth, async (req: any, res) => {
   try {
     const userId = req.user.userId;
     await prisma.notification.updateMany({
@@ -37,7 +36,7 @@ router.post("/mark-read", authenticate, async (req: any, res) => {
 });
 
 // Mark a single notification as read
-router.post("/:id/read", authenticate, async (req: any, res) => {
+router.post("/:id/read", requireAuth, async (req: any, res) => {
   try {
     const userId = req.user.userId;
     const notificationId = req.params.id;
