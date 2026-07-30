@@ -31,8 +31,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Secure CORS policy
-const allowedOrigins = ['http://localhost:3000'];
-app.use(cors({ origin: allowedOrigins }));
+app.use(cors());
 app.use(express.json());
 
 import { requireAuth } from './middleware/auth';
@@ -64,7 +63,7 @@ app.get('/health', (req, res) => {
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: "*",
     methods: ['GET', 'POST'],
   },
 });
